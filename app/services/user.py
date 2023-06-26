@@ -1,6 +1,7 @@
 from typing import List, Dict, Optional
 from sqlalchemy.orm import scoped_session
 
+from .utils import create_user
 from app.models.user import User, UserDetail, UserNickname, UserPortrait
 
 
@@ -12,8 +13,7 @@ class UserORMHandler:
         if self.handler is None:
             raise Exception("has no active db handler")
         user_list = []
-        print(type(args))
-        for item in args:
+        for item in [create_user(item) for item in args]:
             user = User.to_model(**item)
             user.detail = UserDetail.to_model(**item)
             user.nickname = [UserNickname.to_model(**item)]
@@ -26,7 +26,6 @@ class UserORMHandler:
         if self.handler is None:
             raise Exception("has no active db handler")
         for item in args:
-            print(item)
             self.handler.query(User).filter_by(user_id=item["user_id"]).delete()
         self.handler.commit()
 
@@ -43,4 +42,4 @@ class UserORMHandler:
         self.handler.commit()
 
     def get(self, user_id):
-        return self.handler.query(User).filter_by(user_id=user_id).all()
+        return self.handler.query(User).filter_by(user_id=user_id).one_or_none()

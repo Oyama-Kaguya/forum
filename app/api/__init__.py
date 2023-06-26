@@ -1,7 +1,9 @@
 from .user import user_blueprint
+from .announcement import announcement_blueprint
 
 DEFAULT_BLUEPRINT = [
-    user_blueprint
+    user_blueprint,
+    announcement_blueprint
 ]
 
 

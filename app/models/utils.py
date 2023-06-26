@@ -15,7 +15,7 @@ def to_dict(self: Any) -> Dict:
     return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
-def to_dict_specific(self:Any) -> Dict:
+def to_dict_specific(self: Any) -> Dict:
     res = {}
     for col in self.__table__.columns:
         if isinstance(col.type, DateTime):  # 判断类型是否为DateTime
