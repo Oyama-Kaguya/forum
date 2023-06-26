@@ -28,10 +28,10 @@ class AnnouncementORMHandler:
             self.handler.query(Announcement).filter_by(announce_id=item["announce_id"]).delete()
         self.handler.commit()
 
-    def update(self, args: List[Dict]):
-        pass
-
     def get(self, user_id):
         user = UserORMHandler(self.handler).get(user_id)
         return self.handler.query(Announcement).filter(or_(Announcement.announce_type == "全局通知",
                                                            Announcement.announce_range == user.user_id)).all()
+
+    def update(self, args: List[Dict]):
+        pass
