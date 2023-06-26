@@ -6,7 +6,7 @@ from app.services.user import UserORMHandler
 user_blueprint = Blueprint("user", __name__, url_prefix="/user")
 
 
-@user_blueprint.route("/get/<int:user_id>", methods=["GET"])
+@user_blueprint.route("/<int:user_id>", methods=["GET"])
 def get(user_id: int):
     user = UserORMHandler(db.session).get(user_id)
     return jsonify(

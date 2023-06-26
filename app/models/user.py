@@ -1,6 +1,6 @@
 from sqlalchemy import text
 
-from ..extension import db
+from app.extension import db
 from .utils import to_model as tm, to_dict_specific as td
 
 

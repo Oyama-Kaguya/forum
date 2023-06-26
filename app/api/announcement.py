@@ -6,7 +6,7 @@ from app.services.announcement import AnnouncementORMHandler
 announcement_blueprint = Blueprint("announcement", __name__, url_prefix="/announcement")
 
 
-@announcement_blueprint.route("/get/<int:user_id>", methods=["GET"])
+@announcement_blueprint.route("/<int:user_id>", methods=["GET"])
 def get(user_id: int):
     announcement_list = AnnouncementORMHandler(db.session).get(user_id)
     return jsonify([
@@ -26,6 +26,7 @@ def add():
     return jsonify({
         "msg_condition": "success"
     })
+
 
 @announcement_blueprint.route("/delete", methods=["POST"])
 def delete():

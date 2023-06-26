@@ -3,7 +3,7 @@ db_conn_config = {
     'driver': 'pymysql',
     'username': 'forum_develop',
     'password': 'forum_develop',
-    'host': '192.168.10.2',
+    'host': 'localhost',
     'port': '3306',
     'database': 'forum_test'
 }
