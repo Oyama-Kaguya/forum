@@ -1,9 +1,10 @@
-from .user import user
+from .user import user_blueprint
 
 DEFAULT_BLUEPRINT = [
-    (user, '/api/api')
+    user_blueprint
 ]
 
+
 def config_blueprint(app):
-    for blueprint, prefix in DEFAULT_BLUEPRINT:
-        app.register_blueprint(blueprint, url_prefix=prefix)
+    for blueprint in DEFAULT_BLUEPRINT:
+        app.register_blueprint(blueprint)
