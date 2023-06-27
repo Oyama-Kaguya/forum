@@ -1,3 +1,5 @@
+from sqlalchemy import text
+
 from app.extension import db
 
 from .utils import to_model as tm, to_dict_specific as td
@@ -14,7 +16,8 @@ class Announcement(db.Model):  # 通知表
     ), nullable=False)
     announce_range = db.Column(db.String(10), nullable=False)
     announce_content = db.Column(db.String(255), nullable=False)
-    announce_time = db.Column(db.DateTime, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False, server_default=text("NOW()"))
+    announce_time = db.Column(db.DateTime, nullable=False, server_default=text("NOW()"))
 
     @classmethod
     def to_model(cls, **kwargs):

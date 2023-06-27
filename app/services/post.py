@@ -37,6 +37,11 @@ class PostORMHandler:
         # return self.handler.query(Post).order_by(-Post.create_time).limit(30).offset(page * 30).all()
         return self.handler.query(Post).order_by(-Post.create_time).all()
 
+    def get_check(self):
+        if self.handler is None:
+            raise Exception("has no active db handler")
+        return self.handler.query(Post).filter_by(examine_state=1).order_by(-Post.create_time).all()
+
 
 class CommentORMHandler(BaseORMHandler):
     def __init__(self, handler: scoped_session):
@@ -49,9 +54,6 @@ class CommentORMHandler(BaseORMHandler):
     )
     def add(self, args: List[Dict]):
         super().add(args)
-
-    def delete(self, args: List[Dict], **kwargs):
-        super().delete(args, comment_id="comment_id")
 
     def get(self, **kwargs):
         post = self.handler.query(Post).filter_by(post_id=kwargs["post_id"]).all()

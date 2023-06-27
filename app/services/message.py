@@ -15,6 +15,3 @@ class MessageORMHandler(BaseORMHandler):
     )
     def add(self, args: List[Dict]):
         super().add(args)
-
-    def delete(self, args: List[Dict], **kwargs):
-        super().delete(args, message_id="message_id")

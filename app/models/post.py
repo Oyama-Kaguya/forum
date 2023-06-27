@@ -15,7 +15,7 @@ class Post(db.Model):
     total_floor = db.Column(db.Integer, nullable=False)
     is_hidden = db.Column(db.Boolean, nullable=False, server_default=text("True"))
     #  0：审核通过、1：审核中、2：审核不通过
-    is_examine = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    examine_state = db.Column(db.Integer, nullable=False, server_default=text("1"))
     is_topping = db.Column(db.Boolean, nullable=False, server_default=text("False"))
     create_time = db.Column(db.DateTime, nullable=False, index=True, server_default=text("NOW()"))
 

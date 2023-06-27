@@ -33,10 +33,6 @@ class UserORMHandler(BaseORMHandler):
         self.handler.add_all(user_list)
         self.handler.commit()
 
-    def delete(self, args: List[Dict], **kwargs):
-        print(args)
-        super().delete(args, user_id="user_id")
-
     def update(self, args: List[Dict]):
         if self.handler is None:
             raise Exception("has no active db handler")

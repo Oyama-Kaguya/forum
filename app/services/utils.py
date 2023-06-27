@@ -13,13 +13,13 @@ class BaseORMHandler:
         self.handler.add_all([self.cls.to_model(**item) for item in args])
         self.handler.commit()
 
-    def delete(self, args: List[Dict], **kwargs):
+    def delete(self, args: List[Dict]):
         if self.handler is None:
             raise Exception("has no active db handler")
         for item in args:
-            for k, v in kwargs.items():
-                kwargs[k] = item[v]
-                self.handler.query(self.cls).filter_by(**kwargs).delete()
+            self.handler.query(self.cls).filter_by(**{k: v for k, v in item.items()
+                                                      if k in [c.name for c in self.cls.__table__.columns]
+                                                      }).delete()
         self.handler.commit()
 
     def get(self, **kwargs):

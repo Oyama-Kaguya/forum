@@ -37,9 +37,7 @@ def delete():
         return jsonify({
             "msg_condition": "Message Format Error"
         })
-    data = data["users"]
-    print("data", data)
-    UserORMHandler(db.session).delete(data)
+    UserORMHandler(db.session).delete(data["users"])
     return jsonify({
         "msg_condition": "success"
     })

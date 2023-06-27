@@ -4,29 +4,20 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql.operators import or_
 
 from .user import UserORMHandler
-from .utils import add_arguments
+from .utils import add_arguments, BaseORMHandler
 from app.models.announcement import Announcement
 
 
-class AnnouncementORMHandler:
+class AnnouncementORMHandler(BaseORMHandler):
     def __init__(self, handler: scoped_session):
-        self.handler = handler
+        super().__init__(Announcement, handler)
 
     @add_arguments(
-        creaate_announcement=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        creaate_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        announce_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
     def add(self, args: List[Dict]):
-        if self.handler is None:
-            raise Exception("has no active db handler")
-        self.handler.add_all([Announcement.to_model(**item) for item in args])
-        self.handler.commit()
-
-    def delete(self, args: List[Dict]):
-        if self.handler is None:
-            raise Exception("has no active db handler")
-        for item in args:
-            self.handler.query(Announcement).filter_by(announce_id=item["announce_id"]).delete()
-        self.handler.commit()
+        super().add(args)
 
     def get(self, user_id):
         user = UserORMHandler(self.handler).get(user_id)

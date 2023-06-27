@@ -16,6 +16,7 @@ def get_post_home(page: int):
 
 @post_blueprint.route("/<int:post_id>", methods=["GET"])
 def get_post(post_id:int):
+    args = request.args
     post, comment_list = CommentORMHandler(db.session).get(post_id=post_id)
     return jsonify(
         {
@@ -25,3 +26,8 @@ def get_post(post_id:int):
         } if post and comment_list else {
             "msg_condition": "The post do not exist"
         })
+
+
+@post_blueprint.route("/check", methods=["GET"])
+def get_check():
+    return
