@@ -14,11 +14,9 @@ def get_post_home(page: int):
     ])
 
 
-@post_blueprint.route("/", methods=["GET"])
-def get_post():
-    post_id = request.args.get("post_id")
-    page = request.args.get("page")
-    post, comment_list = CommentORMHandler(db.session).get(post_id=post_id, page=page)
+@post_blueprint.route("/<int:post_id>", methods=["GET"])
+def get_post(post_id:int):
+    post, comment_list = CommentORMHandler(db.session).get(post_id=post_id)
     return jsonify(
         {
             "msg_condition": "success",

@@ -55,6 +55,8 @@ class CommentORMHandler(BaseORMHandler):
 
     def get(self, **kwargs):
         post = self.handler.query(Post).filter_by(post_id=kwargs["post_id"]).all()
+        # commit_list = self.handler.query(Comment).filter_by(post_id=kwargs["post_id"])\
+        #     .order_by(Comment.floor).limit(30).offset(kwargs["page"] * 30).all()
         commit_list = self.handler.query(Comment).filter_by(post_id=kwargs["post_id"])\
-            .order_by(Comment.floor).limit(30).offset(kwargs["page"] * 30).all()
+            .order_by(Comment.floor).all()
         return post, commit_list
