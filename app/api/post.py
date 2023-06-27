@@ -30,4 +30,9 @@ def get_post(post_id:int):
 
 @post_blueprint.route("/check", methods=["GET"])
 def get_check():
-    return
+    return jsonify(
+        {
+            "msg_condition": "success",
+            "check": [item.to_dict() for item in PostORMHandler(db.session).get_check()]
+        }
+    )

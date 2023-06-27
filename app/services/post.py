@@ -40,7 +40,8 @@ class PostORMHandler:
     def get_check(self):
         if self.handler is None:
             raise Exception("has no active db handler")
-        return self.handler.query(Post).filter_by(examine_state=1).order_by(-Post.create_time).all()
+        return self.handler.query(Post).filter_by(examine_state=1).order_by(Post.create_time).all()\
+            + self.handler.query(Comment).filter_by(examine_state=1).order_by(Comment.create_time).all()
 
 
 class CommentORMHandler(BaseORMHandler):
