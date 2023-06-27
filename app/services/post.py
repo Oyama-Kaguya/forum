@@ -13,13 +13,13 @@ class PostORMHandler:
     def __init__(self, handler: scoped_session):
         self.handler = handler
 
-    def add_post(self, args:List[Dict]):
+    def add(self, args:List[Dict]):
         if self.handler is None:
             raise Exception("has no active db handler")
         self.handler.add_all([Post.to_model(**item) for item in args])
         self.handler()
 
-    def delete_post(self, args: List[Dict]):
+    def delete(self, args: List[Dict]):
         if self.handler is None:
             raise Exception("has no active db handler")
         for item in args:
@@ -27,11 +27,27 @@ class PostORMHandler:
         self.handler.commit()
 
     def update(self, args: List[Dict]):
+        if self.handler is None:
+            raise Exception("has no active db handler")
         pass
 
-    def get_post(self, search_type: any, page: string):
-        if isinstance(search_type, int):
-            return self.handler.query(Post).filter_by(post_id=search_type).one_or_none()
-        else:
-            return self.handler.query(Post).order_by(-Post.create_time).limit(30).offset(page * 30).all()
+    def get_post(self, page: string):
+        if self.handler is None:
+            raise Exception("has no active db handler")
+        return self.handler.query(Post).order_by(-Post.create_time).limit(30).offset(page * 30).all()
+
+
+class CommentORMHandler:
+    def __init__(self, handler: scoped_session):
+        self.handler = handler
+
+    def add(self, args:List[Dict]):
+        if self.handler is None:
+            raise Exception("has no active db handler")
+
+    def delete(self, args: List[Dict]):
+        if self.handler is None:
+            raise Exception("has no active db handler")
+
+    # def update(self, args:List[Dict]):
 
