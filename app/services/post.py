@@ -1,10 +1,7 @@
 import datetime
-import string
 from typing import List, Dict
 from sqlalchemy.orm import scoped_session
-from sqlalchemy.sql.operators import or_
 
-from .user import UserORMHandler
 from .utils import add_arguments, BaseORMHandler
 from app.models.post import Post, Comment
 
@@ -29,15 +26,16 @@ class PostORMHandler:
             self.handler.query(Post).filter_by(post_id=item["post_id"]).delete()
         self.handler.commit()
 
-    def update(self, args: List[Dict]):
+    def update(self):
         if self.handler is None:
             raise Exception("has no active db handler")
         pass
 
-    def get_post(self, page: string):
+    def get_post_home(self):
         if self.handler is None:
             raise Exception("has no active db handler")
-        return self.handler.query(Post).order_by(-Post.create_time).limit(30).offset(page * 30).all()
+        # return self.handler.query(Post).order_by(-Post.create_time).limit(30).offset(page * 30).all()
+        return self.handler.query(Post).order_by(-Post.create_time).all()
 
 
 class CommentORMHandler(BaseORMHandler):
