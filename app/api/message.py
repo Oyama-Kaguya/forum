@@ -29,7 +29,7 @@ def delete(message_id: int):
 
 
 @message_blueprint.route("/", methods=["GET"])
-def get(user_id: int):
+def get():
     message_list = MessageORMHandler(db.session).get()
     return jsonify([
                        item.to_dict() for item in message_list
