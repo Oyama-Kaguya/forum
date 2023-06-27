@@ -53,4 +53,4 @@ class UserORMHandler:
         self.handler.commit()
 
     def get(self, user_id):
-        return self.handler.query(User).filter_by(user_id=user_id).one_or_none()
+        return self.handler.query(UserDetail).filter_by(user_id=user_id).one_or_none()
