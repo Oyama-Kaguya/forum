@@ -7,7 +7,7 @@ post_blueprint = Blueprint("post", __name__, url_prefix="/post")
 
 
 @post_blueprint.route("/home", methods=["GET"])
-def get_post_home(page: int):
+def get_post_home():
     post_list = PostORMHandler(db.session).get_post_home()
     return jsonify([
         item.to_dict() for item in post_list
