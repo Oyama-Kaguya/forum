@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required
 
 from app.extension import db
 from app.services.user import UserORMHandler
@@ -6,6 +7,19 @@ from app.services.user import UserORMHandler
 user_blueprint = Blueprint("user", __name__, url_prefix="/user")
 
 
+@user_blueprint.route("/login/", methods=["POST"])
+def login():
+    user_id = request.json.get("user_id")
+    password = request.json.get("password")
+    if user_id != 123456 or password != "123456":
+        return jsonify({
+            "msg_condition": "error"
+        })
+    access_token = create_access_token(identity=123456)
+    return jsonify(access_token="bearer " + access_token)
+
+
+@jwt_required()
 @user_blueprint.route("/<int:user_id>", methods=["GET", "DELETE"])
 def get_and_delete(user_id: int):
     if request.method == "GET":
@@ -20,7 +34,6 @@ def get_and_delete(user_id: int):
         return jsonify({
             "msg_condition": "success"
         })
-
 
 
 @user_blueprint.route("/add", methods=["POST"])
