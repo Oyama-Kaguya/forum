@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, set_access_cookies
 
 from app.extension import db
 from app.services.user import UserORMHandler
@@ -17,11 +17,12 @@ def login():
         return jsonify({
             "msg_condition": "error"
         })
+    response = jsonify({
+        "msg_condition": "login successful"
+    })
     access_token = create_access_token(identity=123456)
-    return jsonify({
-        "msg_condition": "success",
-        "access_token":"Bearer " + access_token
-        })
+    set_access_cookies(response, access_token)
+    return response
 
 
 @user_blueprint.route("/<int:user_id>", methods=["GET", "DELETE"])
