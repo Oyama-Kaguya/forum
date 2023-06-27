@@ -8,10 +8,12 @@ message_blueprint = Blueprint("message", __name__, url_prefix="/message")
 
 @message_blueprint.route("/<int:user_id>", methods=["GET"])
 def get(user_id: int):
-    message_list = MessageORMHandler(db.session).get(user_id)
+    message_list = MessageORMHandler(db.session).get()
     return jsonify([
-        item.to_dict() for item in message_list
-    ])
+                       item.to_dict() for item in message_list
+                   ] if message_list else {
+        "msg_condition": "The user do not exist"
+    })
 
 
 @message_blueprint.route("/add", methods=["POST"])

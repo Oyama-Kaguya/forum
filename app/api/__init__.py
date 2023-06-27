@@ -1,11 +1,13 @@
 from .user import user_blueprint
 from .announcement import announcement_blueprint
 from .message import message_blueprint
+from .post import post_blueprint
 
 DEFAULT_BLUEPRINT = [
     user_blueprint,
     announcement_blueprint,
-    message_blueprint
+    message_blueprint,
+    post_blueprint
 ]
 
 

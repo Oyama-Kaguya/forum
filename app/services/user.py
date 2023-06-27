@@ -2,13 +2,13 @@ import datetime
 from typing import List, Dict
 from sqlalchemy.orm import scoped_session
 
-from .utils import add_arguments
+from .utils import add_arguments, BaseORMHandler
 from app.models.user import User, UserDetail, UserNickname, UserPortrait
 
 
-class UserORMHandler:
+class UserORMHandler(BaseORMHandler):
     def __init__(self, handler: scoped_session):
-        self.handler = handler
+        super().__init__(User, handler)
 
     @add_arguments(
         create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -33,12 +33,9 @@ class UserORMHandler:
         self.handler.add_all(user_list)
         self.handler.commit()
 
-    def delete(self, args: List[Dict]):
-        if self.handler is None:
-            raise Exception("has no active db handler")
-        for item in args:
-            self.handler.query(User).filter_by(user_id=item["user_id"]).delete()
-        self.handler.commit()
+    def delete(self, args: List[Dict], **kwargs):
+        print(args)
+        super().delete(args, user_id="user_id")
 
     def update(self, args: List[Dict]):
         if self.handler is None:
