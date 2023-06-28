@@ -53,8 +53,8 @@ class UserORMHandler(BaseORMHandler):
             self.handler.query(User).filter_by(user_id=user_id).update(item)
         self.handler.commit()
 
-    def get_user(self, user_id) -> User | None:
+    def get_user(self, user_id):
         return self.handler.query(User).filter_by(user_id=user_id).one_or_none()
 
-    def get_detail(self, user_id) -> User | None:
+    def get_detail(self, user_id):
         return self.handler.query(UserDetail).filter_by(user_id=user_id).one_or_none()
