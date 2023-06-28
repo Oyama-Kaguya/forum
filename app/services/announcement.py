@@ -13,7 +13,9 @@ class AnnouncementORMHandler(BaseORMHandler):
         super().__init__(Announcement, handler)
 
     @add_arguments(
-        announce_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        announce_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        announce_type="全局通知",
+        announce_range=""
     )
     def add(self, args: Dict):
         print(args)
