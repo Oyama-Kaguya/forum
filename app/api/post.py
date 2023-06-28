@@ -19,7 +19,7 @@ def add():
 @post_blueprint.route("/<int:post_id>", methods=["DELETE"])
 @jwt_required()
 def delete_post(post_id: int):
-    PostORMHandler(db.session).delete(post_id=post_id)
+    PostORMHandler(db.session).check(post_id, False, type="帖子")
     return jsonify({
         "msg_condition": "success"
     })
@@ -28,7 +28,7 @@ def delete_post(post_id: int):
 @post_blueprint.route("/comment/<int:comment_id>", methods=["DELETE"])
 @jwt_required()
 def delete_comment(comment_id: int):
-    CommentORMHandler(db.session).delete(comment_id=comment_id)
+    PostORMHandler(db.session).check(comment_id, False, type="评论")
     return jsonify({
         "msg_condition": "success"
     })
@@ -71,3 +71,15 @@ def get_check():
             "check": check
         }
     )
+
+
+@post_blueprint.route("/check/<post_id>", methods=["GET"])
+@jwt_required()
+def check_post(post_id):
+    PostORMHandler(db.session).check(post_id, True, type="帖子")
+
+
+@post_blueprint.route("comment/check/<comment_id>", methods=["GET"])
+@jwt_required()
+def check_comment(comment_id):
+    PostORMHandler(db.session).check(comment_id, True, type="评论")

@@ -4,7 +4,7 @@ from sqlalchemy.orm import scoped_session
 from flask_jwt_extended import current_user
 
 from .utils import add_arguments, BaseORMHandler
-from app.models.post import Post, Comment
+from app.models.post import Post, Comment, Check
 
 
 class PostORMHandler(BaseORMHandler):
@@ -42,6 +42,26 @@ class PostORMHandler(BaseORMHandler):
         return self.handler.query(Post).filter_by(examine_state=1).order_by(Post.create_time).all()\
             + self.handler.query(Comment).filter_by(examine_state=1).order_by(Comment.create_time).all()
 
+    @add_arguments(
+        user_id=current_user,
+        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    )
+    def check(self, checked_id, passing: bool, **kwargs):
+        if self.handler is None:
+            raise Exception("has no active db handler")
+        #  审核通过
+        if passing:
+            self.handler.query(Post).filter_by(post_id=checked_id).update({"examine_state": 0, "is_hidden": False})
+            check = Check.to_model(**kwargs, checked_id=checked_id, examine_state=0)
+            self.handler.add(check)
+            self.handler.commit()
+        #  审核不通过
+        else:
+            self.handler.query(Post).filter_by(post_id=checked_id).update({"examine_state": 2, "is_hidden": True})
+            check = Check.to_model(**kwargs, checked_id=checked_id, examine_state=2)
+            self.handler.add(check)
+            self.handler.commit()
+
 
 class CommentORMHandler(BaseORMHandler):
     def __init__(self, handler: scoped_session):
@@ -63,6 +83,6 @@ class CommentORMHandler(BaseORMHandler):
         post = self.handler.query(Post).filter_by(post_id=kwargs["post_id"]).all()
         # commit_list = self.handler.query(Comment).filter_by(post_id=kwargs["post_id"])\
         #     .order_by(Comment.floor).limit(30).offset(kwargs["page"] * 30).all()
-        commit_list = self.handler.query(Comment).filter_by(post_id=kwargs["post_id"])\
+        commit_list = self.handler.query(Comment).filter(post_id==kwargs["post_id"])\
             .order_by(Comment.floor).all()
         return post, commit_list
