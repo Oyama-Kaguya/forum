@@ -62,11 +62,12 @@ def delete_comment(comment_id: int):
 @post_blueprint.route("/", methods=["POST"])
 def add():
     data = request.get_json()
-    if "post" not in data:
-        return jsonify({
-            "msg_condition": "format error"
-        })
-    PostORMHandler(db.session).add(data["post"])
+    print(data)
+    # if "post" not in data:
+    #     return jsonify({
+    #         "msg_condition": "format error"
+    #     })
+    PostORMHandler(db.session).add([request.get_json()])
     return jsonify({
         "msg_condition": "success"
     })

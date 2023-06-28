@@ -35,7 +35,7 @@ class DevelopmentConfig(Config):
     """
     DEBUG = True
     JWT_SECRET_KEY = '123456789abcdefg'
-    JWT_TOKEN_LOCATION = ["cookies"]
+    JWT_TOKEN_LOCATION = ["headers","cookies"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
     # 数据库URI
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:xxx@xxxx/xxx'

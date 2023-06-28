@@ -17,10 +17,12 @@ def login():
         return jsonify({
             "msg_condition": "error"
         })
-    response = jsonify({
-        "msg_condition": "login successful"
-    })
     access_token = create_access_token(identity=123456)
+    response = jsonify({
+        "msg_condition": "login successful",
+        "access_token_cookie": access_token
+
+    })
     set_access_cookies(response, access_token)
     return response
 
