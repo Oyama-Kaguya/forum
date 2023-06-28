@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 
 from app.extension import db
 from app.services.message import MessageORMHandler
@@ -7,6 +8,7 @@ message_blueprint = Blueprint("message", __name__, url_prefix="/message")
 
 
 @message_blueprint.route("/add", methods=["POST"])
+@jwt_required()
 def add():
     MessageORMHandler(db.session).add([request.get_json()])
     return jsonify({
@@ -15,6 +17,7 @@ def add():
 
 
 @message_blueprint.route("/<int:message_id>", methods=["DELETE"])
+@jwt_required()
 def delete(message_id: int):
     MessageORMHandler(db.session).delete(message_id=message_id)
     return jsonify({
@@ -23,6 +26,7 @@ def delete(message_id: int):
 
 
 @message_blueprint.route("/", methods=["GET"])
+@jwt_required()
 def get():
     message_list = MessageORMHandler(db.session).get_all()
     return jsonify([
@@ -33,6 +37,7 @@ def get():
 
 
 @message_blueprint.route("/delete", methods=["POST"])
+@jwt_required()
 def delete_args():
     data = request.get_json()
     if "message" not in data:

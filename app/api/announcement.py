@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 
 from app.extension import db
 from app.services.announcement import AnnouncementORMHandler
@@ -7,6 +8,7 @@ announcement_blueprint = Blueprint("announcement", __name__, url_prefix="/announ
 
 
 @announcement_blueprint.route("/add", methods=["POST"])
+@jwt_required()
 def add():
     data = request.get_json()
     if "announcement" not in data:
@@ -21,6 +23,7 @@ def add():
 
 
 @announcement_blueprint.route("/announce_id>", methods=["DELETE"])
+@jwt_required()
 def delete(user_id_or_announce_id: int):
     AnnouncementORMHandler(db.session).delete(announce_id=user_id_or_announce_id)
     return jsonify({
@@ -29,6 +32,7 @@ def delete(user_id_or_announce_id: int):
 
 
 @announcement_blueprint.route("/", methods=["GET"])
+@jwt_required()
 def get():
     announcement_list = AnnouncementORMHandler(db.session).get(user_id=2020218023)
     return jsonify([
@@ -37,6 +41,7 @@ def get():
 
 
 @announcement_blueprint.route("/delete", methods=["POST"])
+@jwt_required()
 def delete_args():
     data = request.get_json()
     if "announcement" not in data:

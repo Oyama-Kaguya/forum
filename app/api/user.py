@@ -35,6 +35,7 @@ def login():
 
 
 @user_blueprint.route("/add", methods=["POST"])
+@jwt_required()
 def add():
     data = request.get_json()
     if "users" not in data:
