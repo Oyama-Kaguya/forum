@@ -38,7 +38,6 @@ def get_check():
             if "post_title" in item else item.pop("comment_content")
     return jsonify(
         {
-            # "msg_condition": "success",
             "check": check
         }
     )
