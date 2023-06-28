@@ -47,20 +47,16 @@ class PostORMHandler(BaseORMHandler):
         user_id=current_user,
         create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
-    def check(self, checked_id, passing: bool, **kwargs: dict):
+    def check(self, checked_id, passing: bool):
         if self.handler is None:
             raise Exception("has no active db handler")
         #  审核通过
         if passing:
             self.handler.query(Post).filter_by(post_id=checked_id).update({"examine_state": 0, "is_hidden": False})
-            check = Check.to_model(**kwargs, checked_id=checked_id, examine_state=0)
-            self.handler.add(check)
             self.handler.commit()
         #  审核不通过
         else:
             self.handler.query(Post).filter_by(post_id=checked_id).update({"examine_state": 2, "is_hidden": True})
-            check = Check.to_model(**kwargs, checked_id=checked_id, examine_state=2)
-            self.handler.add(check)
             self.handler.commit()
 
 
@@ -83,3 +79,8 @@ class CommentORMHandler(BaseORMHandler):
         commit_list = self.handler.query(Comment).filter(and_(Comment.post_id == kwargs["post_id"],
                                                               Comment.is_hidden == False)).order_by(Comment.floor).all()
         return post, commit_list
+
+
+class CheckORMHandler(BaseORMHandler):
+    def __init__(self, handler: scoped_session):
+        super().__init__(Check, handler)
