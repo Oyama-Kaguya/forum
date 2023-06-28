@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, current_user
 
 from app.extension import db, jwt
 from app.services.user import UserORMHandler
@@ -48,18 +48,19 @@ def add():
     })
 
 
-@user_blueprint.route("/<int:user_id>", methods=["GET", "DELETE"])
+@user_blueprint.route("/me", methods=["GET", "DELETE"])
 @jwt_required()
-def get_and_delete(user_id: int):
+def get_and_delete():
+
     if request.method == "GET":
-        user = UserORMHandler(db.session).get_detail(user_id)
+        user = UserORMHandler(db.session).get_detail(current_user)
         return jsonify(
             user.to_dict() if user is not None else {
                 "msg_condition": "The user do not exist"
             }
         )
     elif request.method == "DELETE":
-        UserORMHandler(db.session).delete(user_id=user_id)
+        UserORMHandler(db.session).delete(user_id=current_user)
         return jsonify({
             "msg_condition": "success"
         })
