@@ -1,5 +1,5 @@
 import datetime
-from typing import List, Dict
+from typing import Dict
 from sqlalchemy.orm import scoped_session
 from flask_jwt_extended import current_user
 from sqlalchemy.sql.operators import and_
@@ -35,7 +35,7 @@ class PostORMHandler(BaseORMHandler):
         if self.handler is None:
             raise Exception("has no active db handler")
         # return self.handler.query(Post).order_by(-Post.create_time).limit(30).offset(page * 30).all()
-        return self.handler.query(Post).order_by(-Post.create_time).all()
+        return self.handler.query(Post).filter_by(is_hiddn=False).order_by(-Post.create_time).all()
 
     def get_check(self):
         if self.handler is None:

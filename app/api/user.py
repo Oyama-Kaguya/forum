@@ -22,8 +22,13 @@ def user_lookup_callback(_jwt_header, jwt_data):
 def login():
     user_id = request.form.get("user_id")
     password = request.form.get("password")
-    if UserORMHandler(db.session).login(user_id, password):
+    if result := UserORMHandler(db.session).login(user_id, password):
         access_token = create_access_token(identity=user_id)
+        if result["user_group"] > 1:
+            return jsonify({
+                "msg_condition": "admin",
+                "access_token": access_token
+            })
         return jsonify({
             "msg_condition": "login successful",
             "access_token": access_token

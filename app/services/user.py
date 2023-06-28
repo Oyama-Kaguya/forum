@@ -13,8 +13,8 @@ class UserORMHandler(BaseORMHandler):
     def login(self, user_id, password):
         user = self.get_user(user_id=user_id)
         if user and user.check_password(password):
-            return True
-        return False
+            return user.to_dict()
+        return {}
 
     @add_arguments(
         create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
