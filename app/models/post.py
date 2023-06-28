@@ -54,3 +54,23 @@ class Comment(db.Model):  # 评论表
 
     def to_dict(self):
         return td(self)
+
+
+class Check(db.Model):
+    __tablename__ = 'check_result'
+
+    check_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.String(10), nullable=False, index=True)
+    examine_state = db.Column(db.Integer, nullable=False, server_default=text("1"))
+    type = db.Column(db.Enum(
+        "帖子", "评论"
+    ), nullable=False)
+    checked_id = db.Column(db.Integer, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False, server_default=text("NOW()"))
+
+    @classmethod
+    def to_model(cls, **kwargs):
+        return tm(cls, **kwargs)
+
+    def to_dict(self):
+        return td(self)
