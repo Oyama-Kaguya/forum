@@ -10,6 +10,12 @@ class UserORMHandler(BaseORMHandler):
     def __init__(self, handler: scoped_session):
         super().__init__(User, handler)
 
+    def login(self, user_id, password):
+        user = self.get_user(user_id=user_id)
+        if user and user.check_password(password):
+            return True
+        return False
+
     @add_arguments(
         create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         last_login_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -26,6 +32,8 @@ class UserORMHandler(BaseORMHandler):
         user_list = []
         for item in args:
             user = User.to_model(**item)
+            print(type(item["user_id"]))
+            user.password(item["user_id"])
             user.detail = UserDetail.to_model(**item)
             user.nickname = [UserNickname.to_model(**item)]
             user.portrait = [UserPortrait.to_model(**item)]
@@ -45,8 +53,8 @@ class UserORMHandler(BaseORMHandler):
             self.handler.query(User).filter_by(user_id=user_id).update(item)
         self.handler.commit()
 
-    def get(self, user_id):
-        return self.handler.query(UserDetail).filter_by(user_id=user_id).one_or_none()
+    def get_user(self, user_id) -> User | None:
+        return self.handler.query(User).filter_by(user_id=user_id).one_or_none()
 
-    def get_all(self):
-        return self.handler.query(UserDetail).filter_by().all()
+    def get_detail(self, user_id) -> User | None:
+        return self.handler.query(UserDetail).filter_by(user_id=user_id).one_or_none()

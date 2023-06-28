@@ -1,4 +1,6 @@
+import string
 from sqlalchemy import text
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.extension import db
 from .utils import to_model as tm, to_dict_specific as td
@@ -29,6 +31,12 @@ class User(db.Model):  # 账户表
 
     def to_dict(self):
         return td(self)
+
+    def check_password(self, password: string):
+        return check_password_hash(self.password_hash, password)
+
+    def password(self, new_password: string):
+        self.password_hash = generate_password_hash(new_password)
 
 
 # 子表 昵称表

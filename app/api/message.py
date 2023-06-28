@@ -8,12 +8,7 @@ message_blueprint = Blueprint("message", __name__, url_prefix="/message")
 
 @message_blueprint.route("/add", methods=["POST"])
 def add():
-    data = request.get_json()
-    if "message" not in data:
-        return jsonify({
-            "msg_condition": "format error"
-        })
-    MessageORMHandler(db.session).add(data["message"])
+    MessageORMHandler(db.session).add([request.get_json()])
     return jsonify({
         "msg_condition": "success"
     })
@@ -29,7 +24,7 @@ def delete(message_id: int):
 
 @message_blueprint.route("/", methods=["GET"])
 def get():
-    message_list = MessageORMHandler(db.session).get()
+    message_list = MessageORMHandler(db.session).get_all()
     return jsonify([
                        item.to_dict() for item in message_list
                    ] if message_list else {

@@ -31,8 +31,12 @@ class BaseORMHandler:
     def get(self, **kwargs):
         if self.handler is None:
             raise Exception("has no active db handler")
-        # user = UserORMHandler(self.handler).get(user_id)
-        return self.handler.query(self.cls).filter_by(**kwargs).all()
+        return self.handler.query(self.cls).filter_by(**kwargs).one_or_none()
+
+    def get_all(self):
+        if self.handler is None:
+            raise Exception("has no active db handler")
+        return self.handler.query(self.cls).filter_by().all()
 
 
 def add_arguments(**kwargs):

@@ -20,9 +20,8 @@ class AnnouncementORMHandler(BaseORMHandler):
         super().add(args)
 
     def get(self, user_id):
-        user = UserORMHandler(self.handler).get(user_id)
         return self.handler.query(Announcement).filter(or_(Announcement.announce_type == "全局通知",
-                                                           Announcement.announce_range == user.user_id)).all()
+                                                           Announcement.announce_range == user_id)).all()
 
     def update(self, args: List[Dict]):
         pass
