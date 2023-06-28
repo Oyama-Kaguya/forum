@@ -4,8 +4,8 @@ from app.extension import db
 from .utils import to_model as tm, to_dict_specific as td
 
 
-class Message(db.Model):  # 留言表
-    __tablename__ = 'messages'
+class Message(db.Model):
+    __tablename__ = 'message'
 
     message_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.String(10), nullable=False, index=True)

@@ -10,7 +10,7 @@ post_blueprint = Blueprint("post", __name__, url_prefix="/post")
 @post_blueprint.route("/", methods=["POST"])
 @jwt_required()
 def add():
-    PostORMHandler(db.session).add([request.get_json()])
+    PostORMHandler(db.session).add(request.get_json())
     return jsonify({
         "msg_condition": "success"
     })
@@ -45,8 +45,7 @@ def get_post_home():
 
 @post_blueprint.route("/<int:post_id>", methods=["GET"])
 @jwt_required()
-def get_post(post_id:int):
-    args = request.args
+def get_post(post_id: int):
     post, comment_list = CommentORMHandler(db.session).get(post_id=post_id)
     return jsonify(
         {

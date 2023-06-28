@@ -1,6 +1,7 @@
 import datetime
 from typing import List, Dict
 from sqlalchemy.orm import scoped_session
+from flask_jwt_extended import current_user
 
 from .utils import add_arguments, BaseORMHandler
 from app.models.post import Post, Comment
@@ -11,20 +12,17 @@ class PostORMHandler(BaseORMHandler):
         super().__init__(Post, handler)
 
     @add_arguments(
-        total_floor=1, floor=1,
-        is_hidden=True, examine_state=1, is_topping=False,
-        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        modify_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        total_floor=1, floor=1, user_id=current_user,
+        is_hidden=True, examine_state=1, is_topping=False
     )
-    def add(self, args: List[Dict]):
+    def add(self, args: Dict):
         if self.handler is None:
             raise Exception("has no active db handler")
-        for item in args:
-            post = Post.to_model(**item)
-            self.handler.add(post)
-            self.handler.flush()
-            post.comments = [Comment.to_model(**item, post_id=post.post_id)]
-            self.handler.add(post)
+        post = Post.to_model(**args)
+        self.handler.add(post)
+        self.handler.flush()
+        post.comments = [Comment.to_model(**args, post_id=post.post_id)]
+        self.handler.add(post)
         self.handler()
 
     def update(self):

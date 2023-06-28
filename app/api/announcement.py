@@ -10,13 +10,7 @@ announcement_blueprint = Blueprint("announcement", __name__, url_prefix="/announ
 @announcement_blueprint.route("/add", methods=["POST"])
 @jwt_required()
 def add():
-    data = request.get_json()
-    if "announcement" not in data:
-        return jsonify({
-            "msg_condition": "格式错误"
-        })
-    data = data["announcement"]
-    AnnouncementORMHandler(db.session).add(data)
+    AnnouncementORMHandler(db.session).add(request.get_json())
     return jsonify({
         "msg_condition": "success"
     })
@@ -34,7 +28,7 @@ def delete(user_id_or_announce_id: int):
 @announcement_blueprint.route("/", methods=["GET"])
 @jwt_required()
 def get():
-    announcement_list = AnnouncementORMHandler(db.session).get(user_id=2020218023)
+    announcement_list = AnnouncementORMHandler(db.session).get()
     return jsonify([
         item.to_dict() for item in announcement_list
     ])

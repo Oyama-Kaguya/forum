@@ -35,14 +35,8 @@ def login():
 
 
 @user_blueprint.route("/add", methods=["POST"])
-@jwt_required()
 def add():
-    data = request.get_json()
-    if "users" not in data:
-        return jsonify({
-            "msg_condition": "格式错误"
-        })
-    UserORMHandler(db.session).add(data["users"])
+    UserORMHandler(db.session).add(request.get_json())
     return jsonify({
         "msg_condition": "success"
     })

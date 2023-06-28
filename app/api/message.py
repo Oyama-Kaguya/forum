@@ -10,7 +10,7 @@ message_blueprint = Blueprint("message", __name__, url_prefix="/message")
 @message_blueprint.route("/add", methods=["POST"])
 @jwt_required()
 def add():
-    MessageORMHandler(db.session).add([request.get_json()])
+    MessageORMHandler(db.session).add(request.get_json())
     return jsonify({
         "msg_condition": "success"
     })

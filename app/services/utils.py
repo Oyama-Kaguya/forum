@@ -1,5 +1,24 @@
+import datetime
 from typing import List, Dict
 from sqlalchemy.orm import scoped_session
+
+from flask_jwt_extended import current_user
+
+
+def add_arguments(**kwargs):
+    def out_wrapper(func):
+        def wrapper(*args):
+            print(args)
+            for item in args:
+                if isinstance(item, dict):
+                    print(type(item))
+                    for k, v in kwargs.items():
+                        item[k] = v
+            return func(*args)
+
+        return wrapper
+
+    return out_wrapper
 
 
 class BaseORMHandler:
@@ -7,10 +26,15 @@ class BaseORMHandler:
         self.cls = cls
         self.handler = handler
 
-    def add(self, args: List[Dict]):
+    @add_arguments(
+        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        modify_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        user_id=current_user
+    )
+    def add(self, args: Dict):
         if self.handler is None:
             raise Exception("has no active db handler")
-        self.handler.add_all([self.cls.to_model(**item) for item in args])
+        self.handler.add(self.cls.to_model(**args))
         self.handler.commit()
 
     def delete(self, **kwargs):
@@ -37,18 +61,3 @@ class BaseORMHandler:
         if self.handler is None:
             raise Exception("has no active db handler")
         return self.handler.query(self.cls).filter_by().all()
-
-
-def add_arguments(**kwargs):
-    def out_wrapper(func):
-        def wrapper(*args):
-            for item in args:
-                if isinstance(item, list):
-                    for form in item:
-                        for k, v in kwargs.items():
-                            form[k] = v
-            return func(*args)
-
-        return wrapper
-
-    return out_wrapper

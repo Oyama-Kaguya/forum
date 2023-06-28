@@ -16,10 +16,9 @@ class User(db.Model):  # 账户表
     card_number = db.Column(db.String(18), nullable=False)
     email = db.Column(db.String(50), nullable=False, index=True)
     user_group = db.Column(db.Integer, nullable=False)
-    token = db.Column(db.String(64), nullable=False)
     create_time = db.Column(db.DateTime, nullable=False, server_default=text("NOW()"))
-    last_login_time = db.Column(db.DateTime, nullable=False,
-                                server_default=text("NOW()"), server_onupdate=text("NOW()"))
+    modify_time = db.Column(db.DateTime, nullable=False,
+                            server_default=text("NOW()"), server_onupdate=text("NOW()"))
 
     detail = db.relationship("UserDetail", uselist=False, backref="user", cascade="all, delete")
     nickname = db.relationship("UserNickname", uselist=True, backref="user", cascade="all, delete")
@@ -59,7 +58,7 @@ class UserNickname(db.Model):
 
 # 子表 头像表
 class UserPortrait(db.Model):
-    __tablename__ = "usr_former_portrait"
+    __tablename__ = "user_former_portrait"
 
     portrait_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.String(10), db.ForeignKey("user_base.user_id", ondelete="cascade"), nullable=False,
