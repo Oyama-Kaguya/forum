@@ -16,6 +16,14 @@ def add():
     })
 
 
+@post_blueprint.route("/comment/add", methods=["POST"])
+def add_comment():
+    CommentORMHandler(db.session).add(request.get_json())
+    return jsonify({
+        "msg_condition": "success"
+    })
+
+
 @post_blueprint.route("/<int:post_id>", methods=["DELETE"])
 @jwt_required()
 def delete_post(post_id: int):
