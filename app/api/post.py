@@ -44,6 +44,22 @@ def get_check():
     )
 
 
+@post_blueprint.route("/<int:post_id>", methods=["DELETE"])
+def delete_post(post_id: int):
+    PostORMHandler(db.session).delete(post_id=post_id)
+    return jsonify({
+        "msg_condition": "success"
+    })
+
+
+@post_blueprint.route("/comment/<int:comment_id>", methods=["DELETE"])
+def delete_comment(comment_id: int):
+    CommentORMHandler(db.session).delete(comment_id=comment_id)
+    return jsonify({
+        "msg_condition": "success"
+    })
+
+
 @post_blueprint.route("/", methods=["POST"])
 def add():
     data = request.get_json()
@@ -51,7 +67,7 @@ def add():
         return jsonify({
             "msg_condition": "format error"
         })
-    PostORMHandler.add(data["post"])
+    PostORMHandler(db.session).add(data["post"])
     return jsonify({
         "msg_condition": "success"
     })

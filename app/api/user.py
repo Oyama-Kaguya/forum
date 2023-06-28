@@ -42,6 +42,13 @@ def get_and_delete(user_id: int):
         })
 
 
+@user_blueprint.route("/", methods=["GET"])
+def get():
+    return jsonify({
+        "user_list": [item.to_dict() for item in UserORMHandler(db.session).get_all()]
+    })
+
+
 @user_blueprint.route("/add", methods=["POST"])
 def add():
     data = request.get_json()
@@ -49,8 +56,7 @@ def add():
         return jsonify({
             "msg_condition": "格式错误"
         })
-    data = data["users"]
-    UserORMHandler(db.session).add(data)
+    UserORMHandler(db.session).add(data["users"])
     return jsonify({
         "msg_condition": "success"
     })

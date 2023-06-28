@@ -6,9 +6,9 @@ from .utils import add_arguments, BaseORMHandler
 from app.models.post import Post, Comment
 
 
-class PostORMHandler:
+class PostORMHandler(BaseORMHandler):
     def __init__(self, handler: scoped_session):
-        self.handler = handler
+        super().__init__(Post, handler)
 
     @add_arguments(
         total_floor=1, floor=1,
@@ -22,15 +22,10 @@ class PostORMHandler:
         for item in args:
             post = Post.to_model(**item)
             self.handler.add(post)
-        self.handler.add([Post.to_model(**item, comments=Comment.to_model()) for item in args])
+            self.handler.flush()
+            post.comments = [Comment.to_model(**item, post_id=post.post_id)]
+            self.handler.add(post)
         self.handler()
-
-    def delete(self, args: List[Dict]):
-        if self.handler is None:
-            raise Exception("has no active db handler")
-        for item in args:
-            self.handler.query(Post).filter_by(post_id=item["post_id"]).delete()
-        self.handler.commit()
 
     def update(self):
         if self.handler is None:
