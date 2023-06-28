@@ -8,19 +8,19 @@ user_blueprint = Blueprint("user", __name__, url_prefix="/user")
 
 
 @jwt.user_identity_loader
-def user_identity_lookup(user_id: int):
+def user_identity_lookup(user_id):
     return user_id
 
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
-    return UserORMHandler(db.session).get_user(user_id=identity)
+    return identity
 
 
 @user_blueprint.route("/login/", methods=["POST"])
 def login():
-    user_id = int(request.form.get("user_id"))
+    user_id = request.form.get("user_id")
     password = request.form.get("password")
     if UserORMHandler(db.session).login(user_id, password):
         access_token = create_access_token(identity=user_id)
@@ -51,8 +51,8 @@ def add():
 @user_blueprint.route("/me", methods=["GET", "DELETE"])
 @jwt_required()
 def get_and_delete():
-
     if request.method == "GET":
+        print(type(current_user))
         user = UserORMHandler(db.session).get_detail(current_user)
         return jsonify(
             user.to_dict() if user is not None else {
