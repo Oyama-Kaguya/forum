@@ -18,8 +18,8 @@ def add():
 
 @announcement_blueprint.route("/<announce_id>", methods=["DELETE"])
 @jwt_required()
-def delete(user_id_or_announce_id: int):
-    AnnouncementORMHandler(db.session).delete(announce_id=user_id_or_announce_id)
+def delete(announce_id: int):
+    AnnouncementORMHandler(db.session).delete(announce_id=announce_id)
     return jsonify({
         "msg_condition": "success"
     })

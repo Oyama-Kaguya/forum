@@ -35,7 +35,7 @@ class PostORMHandler(BaseORMHandler):
         if self.handler is None:
             raise Exception("has no active db handler")
         # return self.handler.query(Post).order_by(-Post.create_time).limit(30).offset(page * 30).all()
-        return self.handler.query(Post).filter_by(is_hiddn=False).order_by(-Post.create_time).all()
+        return self.handler.query(Post).filter_by(is_hidden=False).order_by(-Post.create_time).all()
 
     def get_check(self):
         if self.handler is None:
