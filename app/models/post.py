@@ -62,7 +62,7 @@ class Check(db.Model):
     check_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.String(10), nullable=False, index=True)
     examine_state = db.Column(db.Integer, nullable=False, server_default=text("1"))
-    type = db.Column(db.Enum(
+    check_type = db.Column(db.Enum(
         "帖子", "评论"
     ), nullable=False)
     checked_id = db.Column(db.Integer, nullable=False)

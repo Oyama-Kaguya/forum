@@ -1,8 +1,11 @@
+import re
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 
 from app.extension import db
 from app.services.post import PostORMHandler, CommentORMHandler, CheckORMHandler
+from app.services.banword import BanWordORMHandler
 
 post_blueprint = Blueprint("post", __name__, url_prefix="/post")
 
@@ -10,7 +13,12 @@ post_blueprint = Blueprint("post", __name__, url_prefix="/post")
 @post_blueprint.route("/", methods=["POST"])
 @jwt_required()
 def add():
-    PostORMHandler(db.session).add(request.get_json())
+    data = request.get_json()
+    word = [item.to_dict().get("word") for item in BanWordORMHandler(db.session).get_all()]
+    text = data["post_title"]
+    re.sub("|".join(word), "**", text)
+    data["post_title"] = text
+    PostORMHandler(db.session).add(data)
     return jsonify({
         "msg_condition": "success"
     })
@@ -27,7 +35,7 @@ def add_comment():
 @post_blueprint.route("/<int:post_id>", methods=["DELETE"])
 @jwt_required()
 def delete_post(post_id: int):
-    PostORMHandler(db.session).check(post_id, False, type="帖子")
+    PostORMHandler(db.session).check(post_id, False, check_type="帖子")
     CheckORMHandler(db.session).add({
         "examine_state": 2,
         "type": "帖子",
@@ -41,7 +49,7 @@ def delete_post(post_id: int):
 @post_blueprint.route("/comment/<int:comment_id>", methods=["DELETE"])
 @jwt_required()
 def delete_comment(comment_id: int):
-    PostORMHandler(db.session).check(comment_id, False, type="评论")
+    PostORMHandler(db.session).check(comment_id, False, check_type="评论")
     CheckORMHandler(db.session).add({
         "examine_state": 2,
         "type": "评论",
@@ -94,7 +102,7 @@ def get_check():
 @post_blueprint.route("/check/<post_id>", methods=["GET"])
 @jwt_required()
 def check_post(post_id):
-    PostORMHandler(db.session).check(post_id, True, type="帖子")
+    PostORMHandler(db.session).check(post_id, True, check_type="帖子")
     CheckORMHandler(db.session).add({
         "examine_state": 0,
         "type": "帖子",
@@ -105,7 +113,7 @@ def check_post(post_id):
 @post_blueprint.route("comment/check/<comment_id>", methods=["GET"])
 @jwt_required()
 def check_comment(comment_id):
-    PostORMHandler(db.session).check(comment_id, True, type="评论")
+    PostORMHandler(db.session).check(comment_id, True, check_type="评论")
     CheckORMHandler(db.session).add({
         "examine_state": 0,
         "type": "评论",
