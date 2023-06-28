@@ -30,9 +30,28 @@ def get_post(post_id:int):
 
 @post_blueprint.route("/check", methods=["GET"])
 def get_check():
+    check = [item.to_dict() for item in PostORMHandler(db.session).get_check()]
+    for item in check:
+        item["type"] = "title" \
+            if "post_title" in item else "comment"
+        item["content"] = item.pop("post_title") \
+            if "post_title" in item else item.pop("comment_content")
     return jsonify(
         {
-            "msg_condition": "success",
-            "check": [item.to_dict() for item in PostORMHandler(db.session).get_check()]
+            # "msg_condition": "success",
+            "check": check
         }
     )
+
+
+@post_blueprint.route("/", methods=["POST"])
+def add():
+    data = request.get_json()
+    if "post" not in data:
+        return jsonify({
+            "msg_condition": "format error"
+        })
+    PostORMHandler.add(data["post"])
+    return jsonify({
+        "msg_condition": "success"
+    })

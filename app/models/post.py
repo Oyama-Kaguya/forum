@@ -18,6 +18,8 @@ class Post(db.Model):
     examine_state = db.Column(db.Integer, nullable=False, server_default=text("1"))
     is_topping = db.Column(db.Boolean, nullable=False, server_default=text("False"))
     create_time = db.Column(db.DateTime, nullable=False, index=True, server_default=text("NOW()"))
+    # modify_time = db.Column(db.DateTime, nullable=False,
+    #                         server_default=text("NOW()"), server_onupdate=text("NOW()"))
 
     comments = db.relationship("Comment", uselist=True, backref="post", cascade="all, delete")
 

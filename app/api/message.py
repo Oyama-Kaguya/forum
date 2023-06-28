@@ -11,10 +11,9 @@ def add():
     data = request.get_json()
     if "message" not in data:
         return jsonify({
-            "msg_condition": "格式错误"
+            "msg_condition": "format error"
         })
-    data = data["message"]
-    MessageORMHandler(db.session).add(data)
+    MessageORMHandler(db.session).add(data["message"])
     return jsonify({
         "msg_condition": "success"
     })

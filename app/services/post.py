@@ -11,12 +11,18 @@ class PostORMHandler:
         self.handler = handler
 
     @add_arguments(
-        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        total_floor=1, floor=1,
+        is_hidden=True, examine_state=1, is_topping=False,
+        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        modify_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
     def add(self, args: List[Dict]):
         if self.handler is None:
             raise Exception("has no active db handler")
-        self.handler.add_all([Post.to_model(**item) for item in args])
+        for item in args:
+            post = Post.to_model(**item)
+            self.handler.add(post)
+        self.handler.add([Post.to_model(**item, comments=Comment.to_model()) for item in args])
         self.handler()
 
     def delete(self, args: List[Dict]):
@@ -54,7 +60,11 @@ class CommentORMHandler(BaseORMHandler):
         modify_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
     def add(self, args: List[Dict]):
-        super().add(args)
+        if self.handler is None:
+            raise Exception("has no active db handler")
+        post_list = []
+        for item in args:
+            post = Post.to_model(**item)
 
     def get(self, **kwargs):
         post = self.handler.query(Post).filter_by(post_id=kwargs["post_id"]).all()
