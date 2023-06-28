@@ -47,3 +47,6 @@ class UserORMHandler(BaseORMHandler):
 
     def get(self, user_id):
         return self.handler.query(UserDetail).filter_by(user_id=user_id).one_or_none()
+
+    def get_all(self):
+        return self.handler.query(UserDetail).filter_by().all()
