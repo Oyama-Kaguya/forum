@@ -43,10 +43,6 @@ class PostORMHandler(BaseORMHandler):
         return self.handler.query(Post).filter_by(examine_state=1).order_by(Post.create_time).all() \
             + self.handler.query(Comment).filter_by(examine_state=1).order_by(Comment.create_time).all()
 
-    @add_arguments(
-        user_id=current_user,
-        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    )
     def check(self, checked_id, passing: bool):
         if self.handler is None:
             raise Exception("has no active db handler")
