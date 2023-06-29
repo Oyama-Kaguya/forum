@@ -14,7 +14,9 @@ class PostORMHandler(BaseORMHandler):
 
     @add_arguments(
         total_floor=1, floor=1, user_id=current_user,
-        is_hidden=True, examine_state=1, is_topping=False
+        is_hidden=True, examine_state=1, is_topping=False,
+        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        modify_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
     def add(self, args: Dict):
         if self.handler is None:
@@ -62,11 +64,17 @@ class CommentORMHandler(BaseORMHandler):
 
     @add_arguments(
         is_hidden=True, examine_state=1, is_topping=False,
-        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        modify_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
     def add(self, args: Dict):
+        post = self.handler.query(Post).filter_by(post_id=args["post_id"]).first()
+        total_floor = post.to_dict().get("total_floor")
+        args["floor"] = total_floor + 1
         super().add(args)
+        self.handler.query(Post).filter_by(post_id=args["post_id"]).update({
+            "modify_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "total_floor": args["floor"]
+        })
+        self.handler.commit()
 
     def get(self, **kwargs):
         post = self.handler.query(Post).filter_by(post_id=kwargs["post_id"]).all()
