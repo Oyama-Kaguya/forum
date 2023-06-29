@@ -15,9 +15,8 @@ post_blueprint = Blueprint("post", __name__, url_prefix="/post")
 def add():
     data = request.get_json()
     word = [item.to_dict().get("word") for item in BanWordORMHandler(db.session).get_all()]
-    text = data["post_title"]
-    re.sub("|".join(word), "**", text)
-    data["post_title"] = text
+    data["post_title"] = re.sub("|".join(word), "**", data["post_title"])
+    data["comment_content"] = re.sub("|".join(word), "**", data["comment_content"])
     PostORMHandler(db.session).add(data)
     return jsonify({
         "msg_condition": "success"
@@ -29,9 +28,7 @@ def add():
 def add_comment():
     data = request.get_json()
     word = [item.to_dict().get("word") for item in BanWordORMHandler(db.session).get_all()]
-    text = data["comment_content"]
-    re.sub("|".join(word), "**", text)
-    data["comment_content"] = text
+    data["comment_content"] = re.sub("|".join(word), "**", data["comment_content"])
     CommentORMHandler(db.session).add(request.get_json())
     return jsonify({
         "msg_condition": "success"
