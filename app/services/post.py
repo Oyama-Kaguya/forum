@@ -81,11 +81,11 @@ class CommentORMHandler(BaseORMHandler):
             raise Exception("has no active db handler")
         #  审核通过
         if passing:
-            self.handler.query(Post).filter_by(comment_id=comment_id).update({"examine_state": 0, "is_hidden": False})
+            self.handler.query(self.cls).filter_by(comment_id=comment_id).update({"examine_state": 0, "is_hidden": False})
             self.handler.commit()
         #  审核不通过
         else:
-            self.handler.query(Post).filter_by(comment_id=comment_id).update({"examine_state": 2, "is_hidden": True})
+            self.handler.query(self.cls).filter_by(comment_id=comment_id).update({"examine_state": 2, "is_hidden": True})
             self.handler.commit()
 
 
