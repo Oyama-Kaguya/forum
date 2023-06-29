@@ -26,6 +26,11 @@ def add():
 
 @post_blueprint.route("/comment/add", methods=["POST"])
 def add_comment():
+    data = request.get_json()
+    word = [item.to_dict().get("word") for item in BanWordORMHandler(db.session).get_all()]
+    text = data["comment_content"]
+    re.sub("|".join(word), "**", text)
+    data["comment_content"] = text
     CommentORMHandler(db.session).add(request.get_json())
     return jsonify({
         "msg_condition": "success"
@@ -38,7 +43,7 @@ def delete_post(post_id: int):
     PostORMHandler(db.session).check(post_id, False)
     CheckORMHandler(db.session).add({
         "examine_state": 2,
-        "type": "帖子",
+        "check_type": "帖子",
         "checked_id": post_id
     })
     return jsonify({
@@ -52,7 +57,7 @@ def delete_comment(comment_id: int):
     PostORMHandler(db.session).check(comment_id, False)
     CheckORMHandler(db.session).add({
         "examine_state": 2,
-        "type": "评论",
+        "check_type": "评论",
         "checked_id": comment_id
     })
     return jsonify({
@@ -105,7 +110,7 @@ def check_post(post_id):
     PostORMHandler(db.session).check(post_id, True)
     CheckORMHandler(db.session).add({
         "examine_state": 0,
-        "type": "帖子",
+        "check_type": "帖子",
         "checked_id": post_id
     })
 
@@ -116,6 +121,6 @@ def check_comment(comment_id):
     PostORMHandler(db.session).check(comment_id, True)
     CheckORMHandler(db.session).add({
         "examine_state": 0,
-        "type": "评论",
+        "check_type": "评论",
         "checked_id": comment_id
     })
