@@ -25,6 +25,7 @@ def add():
 
 
 @post_blueprint.route("/comment/add", methods=["POST"])
+@jwt_required()
 def add_comment():
     data = request.get_json()
     word = [item.to_dict().get("word") for item in BanWordORMHandler(db.session).get_all()]
