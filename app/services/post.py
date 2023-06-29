@@ -43,16 +43,16 @@ class PostORMHandler(BaseORMHandler):
         return self.handler.query(Post).filter_by(examine_state=1).order_by(Post.create_time).all() \
             + self.handler.query(Comment).filter_by(examine_state=1).order_by(Comment.create_time).all()
 
-    def check(self, checked_id, passing: bool):
+    def check(self, post_id, passing: bool):
         if self.handler is None:
             raise Exception("has no active db handler")
         #  审核通过
         if passing:
-            self.handler.query(Post).filter_by(post_id=checked_id).update({"examine_state": 0, "is_hidden": False})
+            self.handler.query(self.cls).filter_by(post_id=post_id).update({"examine_state": 0, "is_hidden": False})
             self.handler.commit()
         #  审核不通过
         else:
-            self.handler.query(Post).filter_by(post_id=checked_id).update({"examine_state": 2, "is_hidden": True})
+            self.handler.query(self.cls).filter_by(post_id=post_id).update({"examine_state": 2, "is_hidden": True})
             self.handler.commit()
 
 
@@ -75,6 +75,18 @@ class CommentORMHandler(BaseORMHandler):
         commit_list = self.handler.query(Comment).filter(and_(Comment.post_id == kwargs["post_id"],
                                                               Comment.is_hidden == False)).order_by(Comment.floor).all()
         return post, commit_list
+
+    def check(self, comment_id, passing: bool):
+        if self.handler is None:
+            raise Exception("has no active db handler")
+        #  审核通过
+        if passing:
+            self.handler.query(Post).filter_by(comment_id=comment_id).update({"examine_state": 0, "is_hidden": False})
+            self.handler.commit()
+        #  审核不通过
+        else:
+            self.handler.query(Post).filter_by(comment_id=comment_id).update({"examine_state": 2, "is_hidden": True})
+            self.handler.commit()
 
 
 class CheckORMHandler(BaseORMHandler):

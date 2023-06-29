@@ -54,7 +54,7 @@ def delete_post(post_id: int):
 @post_blueprint.route("/comment/<int:comment_id>", methods=["DELETE"])
 @jwt_required()
 def delete_comment(comment_id: int):
-    PostORMHandler(db.session).check(comment_id, False)
+    CommentORMHandler(db.session).check(comment_id, False)
     CheckORMHandler(db.session).add({
         "examine_state": 2,
         "check_type": "评论",
@@ -121,7 +121,7 @@ def check_post(post_id):
 @post_blueprint.route("comment/check/<comment_id>", methods=["GET"])
 @jwt_required()
 def check_comment(comment_id):
-    PostORMHandler(db.session).check(comment_id, True)
+    CommentORMHandler(db.session).check(comment_id, True)
     CheckORMHandler(db.session).add({
         "examine_state": 0,
         "check_type": "评论",
