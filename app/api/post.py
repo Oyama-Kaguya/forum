@@ -113,6 +113,9 @@ def check_post(post_id):
         "check_type": "帖子",
         "checked_id": post_id
     })
+    return jsonify({
+        "msg_condition": "success"
+    })
 
 
 @post_blueprint.route("comment/check/<comment_id>", methods=["GET"])
@@ -123,4 +126,7 @@ def check_comment(comment_id):
         "examine_state": 0,
         "check_type": "评论",
         "checked_id": comment_id
+    })
+    return jsonify({
+        "msg_condition": "success"
     })
